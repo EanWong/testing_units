@@ -1,0 +1,17 @@
+{
+  "name": "watch_and_jsdav",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.14.0",
+    "node-watch": "^0.4.0",
+    "jsDAV": "^0.3.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ean Wong",
+  "license": "ISC"
+}

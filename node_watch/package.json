@@ -1,0 +1,16 @@
+{
+  "name": "node_watch",
+  "version": "1.0.0",
+  "description": "watching files",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.14.0",
+    "node-watch": "^0.4.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
