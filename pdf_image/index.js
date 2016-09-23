@@ -8,7 +8,7 @@ const node_fs = require('node-fs');
 var chokidar = require('chokidar');
 // Initialize watcher.
 var watcher = chokidar.watch('data/', {
-  ignored: [/[\/\\]\./, 'data/renamed/'],
+  ignored: [/[\/\\]\./, 'data/renamed/', 'data/to_process/'],
   ignoreInitial: true,
   awaitWriteFinish: true,
   persistent: true
@@ -44,36 +44,62 @@ app.use(function (req, res, next) {
 ) 
 
   function upload_received(path, event) {
-    log('File Uploaded: '+path);
-    var old_path = './' + path;
-    var new_path = './data/renamed/'+ path;
+    log('File Uploaded: '+ path);
+
+    // Keep only filename
+    var filename = path.split('/');
+    filename = filename[filename.length -1];
+
+    var curr_path = __dirname + '/data/';
+    var new_path = __dirname + '/data/to_process/';
+
+    console.log('Filename: ' + filename);
+    console.log('Complete path:' + curr_path)
+    console.log('Complete new path:' + new_path)
     
-    node_fs.rename(old_path, new_path, function(err) {
-      if (err) throw err;
-      console.log(old_path + " -> Renamed -> " + new_path);
-    });
-    
-    //Rename
+    /*
+    */
+    pdf_to_bmp(filename, curr_path, new_path);
 
   }
 
+  //Out path is not implemented yet
+  //path DOES NOT include filename
+  function pdf_to_bmp(filename, full_in_path, full_out_path) {
+    
+    var pdfImage = new PDFImage(full_in_path + filename);
 
-app.get('/', function (req, res) {
-  var path = __dirname + '/data/renamed/data/';
-  var pdfPath = path + 'SMFP_CEEO16092013180.pdf';
-  
-  console.log(pdfPath);
-  
-  var pdfImage = new PDFImage(pdfPath);
+    pdfImage.getInfo().then(function (info) {
+      for (var i = 0; i < info["Pages"]; i++) {
 
-  pdfImage.getInfo().then(function (info) {
-    for (var i = 0; i < info["Pages"]; i++) {
-      pdfImage.convertPage(i).then(function (imagePath) {
-        console.log(imagePath + ' done');
-      }); 
-    }
-  })
-  res.send("OK");
+        pdfImage.convertPage(i).then(function (image_path) {
+
+          console.log('Current image path: ' + image_path);
+
+          var image_name = image_path.split('/');
+          image_name = image_name[image_name.length -1 ];
+          console.log('image name is :' + image_name);
+
+          var new_image_path = full_out_path + image_name;
+
+          console.log('New image path is :' + new_image_path);
+          
+          node_fs.rename(image_path, new_image_path, function(err) {
+            
+            if (err) throw err;
+            console.log(image_path + " -> Renamed -> " + new_image_path);
+          
+          });
+          
+
+
+        }); 
+      }
+    })
+  }
+
+
+app.get('/', function (req, res) {  res.send("OK, here's a change");
 
 });
 
