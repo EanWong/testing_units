@@ -2,7 +2,7 @@ This is a suite of docker-enabled simple web applications to gain familiarity wi
 
 The protocol should be this:
 - Clone this repo.
-- Build the Docker image using the Dockerfile
+- Build the Docker image using a Dockerfile inside of each directory. Be in the working directory of that DockerFile
 
 	ie. "docker build -t <desired-docker-image-name> ."
 - Run a container with the options to allow for:
